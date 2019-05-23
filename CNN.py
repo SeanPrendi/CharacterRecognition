@@ -29,12 +29,12 @@ class OCR(object):
         cvt_to_tensor = transforms.Compose([transforms.ToTensor()])
         mnist_train = dataset.MNIST(root="data", download=True, train=True, transform=cvt_to_tensor)
         dataloader_train = torch.utils.data.DataLoader(mnist_train, batch_size=25, num_workers=0)
-        self.iterator_train = iter(dataloader_train) # Creates an iterator object from data loader
+        self.iterator_train = dataloader_train
 
         # Testing Data
         mnist_test = dataset.MNIST(root="data", download=True, train=False, transform=cvt_to_tensor)
         dataloader_test = torch.utils.data.DataLoader(mnist_test, batch_size=self.batch_size, num_workers=0)
-        self.iterator_test = iter(dataloader_test)
+        self.iterator_test = dataloader_test
 
         # Possible labels for data
         classes = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
@@ -69,9 +69,10 @@ class OCR(object):
         # - momentum is the amount that each step is influence by previous steps, reduces dangers of small local minima
 
 
-        for epoch in range(10): # Loop over data set 10 times
+        for epoch in range(self.num_epochs): # Loop over data set 10 times
             count = 1
             current_loss = 0.0
+
             for data in self.iterator_train: # Loop over all batches in the training data
                 batch, correct_labels = data # Batch: batch of images; correct_labels: proper classes for that batch
                 batch, correct_labels = batch.to(self.device), correct_labels.to(self.device) # Send variables to GPU

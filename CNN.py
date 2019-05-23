@@ -69,7 +69,7 @@ class OCR(object):
         # - momentum is the amount that each step is influence by previous steps, reduces dangers of small local minima
 
 
-        for epoch in range(self.num_epochs): # Loop over data set 10 times
+        for epoch in range(10): # Loop over data set 10 times
             count = 1
             current_loss = 0.0
             for data in self.iterator_train: # Loop over all batches in the training data
@@ -86,13 +86,13 @@ class OCR(object):
                 current_loss += loss.item() # Increase value of loss
 
                 count += 1
-                if count % 2000 == 0:  # print loss every 2000 mini-batches
-                    print('[%d, %5d] loss: %.3f' % (epoch + 1, count, current_loss / 2000))
+                if count % 200 == 0:  # print loss every 2000 mini-batches
+                    print('[%d, %5d] loss: %.3f' % (epoch + 1, count, current_loss / 200))
                     current_loss = 0.0
 
                 self.save("models/char_recognition_ver" + str(epoch+1)) # Save model after every epoch
 
-            print('Finished Training')
+        print('Finished Training')
 
     def test(self):
         classes = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
@@ -102,6 +102,7 @@ class OCR(object):
         with torch.no_grad(): # Run tests with no back propogation
             for data in self.iterator_test:
                 batch, correct_labels = data
+                batch, correct_labels = batch.to(self.device), correct_labels.to(self.device)
                 outputs = self.model(batch) # Make predictions
                 _, predicted = torch.max(outputs, dim=1) # Gets class with highest probability for each image
                 c = (predicted == correct_labels).squeeze() # Find the predictions that match the correct labels

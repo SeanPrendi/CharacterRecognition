@@ -55,8 +55,9 @@ class OCR(object):
                 x = self.linear(x)
                 return torch.nn.functional.softmax(x, dim=0) # Softmax activation function for determining probabilities of each class
 
-        self.model = Model()
-        self.model = self.model.to(self.device) # Send model (and parameters) to GPU
+        model = Model()
+        model = model.to(self.device) # Send model (and parameters) to GPU
+        self.model = model
 
         # Loss function
         criterion = torch.nn.CrossEntropyLoss() # Cross entropy loss function, good for >2 categories, punishes high confidence incorrect answers harshly
@@ -89,7 +90,7 @@ class OCR(object):
                     print('[%d, %5d] loss: %.3f' % (epoch + 1, count, current_loss / 2000))
                     current_loss = 0.0
 
-                # self.save("models/char_recognition_ver" + str(epoch+1)) # Save model after every epoch
+                self.save("models/char_recognition_ver" + str(epoch+1)) # Save model after every epoch
 
             print('Finished Training')
 
@@ -122,7 +123,7 @@ class OCR(object):
         # Load model
 
     def load(self, in_path):
-        if self.model is not None and in_path is not None:
+        if in_path is not None:
             self.model.load_state_dict(torch.load(in_path))
 
 def main():

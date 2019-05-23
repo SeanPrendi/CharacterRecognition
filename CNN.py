@@ -11,7 +11,7 @@ class OCR(object):
                  batch_size=25, # Batch size
                  num_epochs=10, # Number of Epochs
                  lr=0.001, # Learning Rate
-                 momentum=0.09 # Optimization momentum
+                 momentum=0.9 # Optimization momentum
                  ):
         self.use_cuda = use_cuda
         if use_cuda:
@@ -22,7 +22,7 @@ class OCR(object):
         self.batch_size = batch_size
         self.num_epochs = num_epochs
         self.lr = lr
-        self.momentum=0.09
+        self.momentum=momentum
 
     def fit(self):
         # Training Data
@@ -89,7 +89,7 @@ class OCR(object):
                     print('[%d, %5d] loss: %.3f' % (epoch + 1, count, current_loss / 2000))
                     current_loss = 0.0
 
-                self.save("models/char_recognition_ver" + str(epoch+1)) # Save model after every epoch
+                # self.save("models/char_recognition_ver" + str(epoch+1)) # Save model after every epoch
 
             print('Finished Training')
 
@@ -124,3 +124,10 @@ class OCR(object):
     def load(self, in_path):
         if self.model is not None and in_path is not None:
             self.model.load_state_dict(torch.load(in_path))
+
+def main():
+    ocr = OCR()
+    ocr.fit()
+    ocr.test()
+
+main()
